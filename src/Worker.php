@@ -43,9 +43,7 @@ class Worker
         while ($running) {
             $work = $this->queue->getWork();
             if ($work !== null) {
-                $this->logger->debug("Starting Unit of work: " . (string) $work->identifier);
-                $running = $this->doWork($work);
-                $this->logger->debug("Finished Unit of work: " . (string) $work->identifier);
+                $running = $this->tryAndDoWork($work);
             } else {
                 $this->logger->debug("Sleeping as no work found");
                 sleep(10);
@@ -54,6 +52,28 @@ class Worker
 
         $this->logger->debug("Worker stopping");
         return $this;
+    }
+
+    /**
+     * @param $work
+     * @return bool
+     */
+    protected function tryAndDoWork($work)
+    {
+        $running = true;
+        try {
+            $stringId = (string)$work->identifier;
+            $this->logger->debug("Starting Unit of work: " . $stringId);
+            $running = $this->doWork($work);
+            $this->logger->debug("Finished Unit of work: " . $stringId);
+        } catch (\Exception $error) {
+            $this->logger->error(
+                "Work id $stringId caused error: " . $error->getMessage(),
+                ['exception' => $error]
+            );
+            $this->queue->markWorkAsFailed($work);
+        }
+        return $running;
     }
 
     /**
