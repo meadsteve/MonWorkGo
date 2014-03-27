@@ -1,0 +1,19 @@
+{
+    "name": "mead-steve/mon-work-go",
+    "description": "A simple mongo DB based work queue.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Steve B",
+            "email": "meadsteve@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4"
+    },
+    "autoload": {
+        "psr-0": {
+            "MeadSteve\\MonWorkGo": "src/"
+        }
+    }
+}
