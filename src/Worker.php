@@ -4,6 +4,9 @@
 namespace MeadSteve\MonWorkGo;
 
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+
 class Worker
 {
     /**
@@ -16,10 +19,16 @@ class Worker
      */
     protected $workFunction;
 
-    public function __construct(Queue $queue, callable $workFunction)
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    public function __construct(Queue $queue, callable $workFunction, LoggerInterface $logger = null)
     {
         $this->queue = $queue;
         $this->workFunction = $workFunction;
+        $this->logger = $logger ?: new NullLogger();
     }
 
     public function start()
@@ -45,6 +54,6 @@ class Worker
     protected function doWork($payload)
     {
         $call = $this->workFunction;
-        return ($call($payload) !== false);
+        return ($call($payload, $this->logger) !== false);
     }
 }
