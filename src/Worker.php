@@ -55,15 +55,15 @@ class Worker
      * @param $work
      * @return bool
      */
-    protected function doWork($work)
+    protected function doWork(WorkUnit $work)
     {
         $call = $this->workFunction;
-        $response = $call($work['payload'], $this->logger);
+        $response = $call($work->payload, $this->logger);
 
         if ($response & self::WORK_RESPONSE_FAILED) {
-            $this->queue->markWorkAsFailed($work['id']);
+            $this->queue->markWorkAsFailed($work);
         } else {
-            $this->queue->markWorkAsComplete($work['id']);
+            $this->queue->markWorkAsComplete($work);
         }
 
         return ($response & self::WORK_RESPONSE_HALT_PROCESSING) !== 0;

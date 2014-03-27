@@ -33,6 +33,9 @@ class Queue
         return $this;
     }
 
+    /**
+     * @return WorkUnit|null
+     */
     public function getWork()
     {
         $workObject = $this->collection->findAndModify(
@@ -44,29 +47,26 @@ class Queue
             ]
         );
         if (isset($workObject['payload'])) {
-            return [
-                'id' => $workObject['_id'],
-                'payload' => $workObject['payload']
-            ];
+            return new WorkUnit($workObject['_id'], $workObject['payload']);
         } else {
             return null;
         }
     }
 
-    public function markWorkAsComplete(\MongoId $identifier)
+    public function markWorkAsComplete(WorkUnit $work)
     {
         $this->collection->update(
-            ['_id'=> $identifier],
+            ['_id'=> $work->identifier],
             ['$set' => ['status' => self::STATUS_COMPLETE, "ended" => new \MongoDate()]],
             ['w' => 0]
         );
         return $this;
     }
 
-    public function markWorkAsFailed(\MongoId $identifier)
+    public function markWorkAsFailed(WorkUnit $work)
     {
         $this->collection->update(
-            ['_id'=> $identifier],
+            ['_id'=> $work->identifier],
             ['$set' => ['status' => self::STATUS_FAILED, "ended" => new \MongoDate()]],
             ['w' => 0]
         );
