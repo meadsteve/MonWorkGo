@@ -9,6 +9,10 @@ use Psr\Log\NullLogger;
 
 class Worker
 {
+    const WORK_RESPONSE_HALT_PROCESSING = 2;
+    const WORK_RESPONSE_FAILED = 1;
+    const WORK_RESPONSE_SUCCESS = 0;
+
     /**
      * @var Queue
      */
@@ -35,9 +39,9 @@ class Worker
     {
         $running = true;
         while ($running) {
-            $payload = $this->queue->getWork();
-            if ($payload !== null) {
-                $running = $this->doWork($payload);
+            $work = $this->queue->getWork();
+            if ($work !== null) {
+                $running = $this->doWork($work);
             } else {
                 sleep(1000);
             }
@@ -48,12 +52,20 @@ class Worker
 
     /**
      * Calls the workfunction with the payload. Returns false if the work should stop.
-     * @param $payload
+     * @param $work
      * @return bool
      */
-    protected function doWork($payload)
+    protected function doWork($work)
     {
         $call = $this->workFunction;
-        return ($call($payload, $this->logger) !== false);
+        $response = $call($work['payload'], $this->logger);
+
+        if ($response & self::WORK_RESPONSE_FAILED) {
+            $this->queue->markWorkAsFailed($work['id']);
+        } else {
+            $this->queue->markWorkAsComplete($work['id']);
+        }
+
+        return ($response & self::WORK_RESPONSE_HALT_PROCESSING) !== 0;
     }
 }
