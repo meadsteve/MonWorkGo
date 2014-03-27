@@ -3,6 +3,16 @@ MonWorkGo
 
 Simple work queue built on top of mongodb. A single collection in mongoDB is used to represent one work queue. A json payload is used to desribe the work which is then processed by a supplied callback.
 
+## Installation
+The easiest way to install this library is using composer. In your project's composer.json file add:
+
+    {
+        "require": {
+            "mead-steve/mon-work-go": "1.1.*"
+        }
+    }
+Then run composer update.
+
 ## Queueing up work
 A mixed array of data describing your work can get queued for processing. This will be quick so you can respond to your user like a hero. This will create a collection called mainQueue in your mongoDB (if it doesn't already exist).
 
