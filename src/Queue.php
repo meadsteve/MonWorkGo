@@ -72,4 +72,22 @@ class Queue
         );
         return $this;
     }
+
+    public function clearCompletedWork()
+    {
+        $this->collection->remove(
+            ['status' => self::STATUS_COMPLETE],
+            ['w' => 0]
+        );
+        return $this;
+    }
+
+    public function clearFailedWork()
+    {
+        $this->collection->remove(
+            ['status' => self::STATUS_FAILED],
+            ['w' => 0]
+        );
+        return $this;
+    }
 }

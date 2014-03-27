@@ -6,7 +6,9 @@ $mongoDB = $mongo->selectDB("test");
 
 $manager = new \MeadSteve\MonWorkGo\Manager($mongoDB);
 
+
 $manager->getQueue("mainQueue")
+    ->clearCompletedWork()      // Do a bit of house keeping
     ->addWork(["jobOne", 34])
     ->addWork(["jobTwo", 5, 7])
     ->addWork(["jobThree", 8])
