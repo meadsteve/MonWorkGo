@@ -43,7 +43,8 @@ class Worker
             if ($work !== null) {
                 $running = $this->doWork($work);
             } else {
-                sleep(1000);
+                $this->logger->debug("Sleeping as no work found");
+                sleep(10);
             }
         }
 
@@ -65,7 +66,6 @@ class Worker
         } else {
             $this->queue->markWorkAsComplete($work);
         }
-
-        return ($response & self::WORK_RESPONSE_HALT_PROCESSING) !== 0;
+        return ($response & self::WORK_RESPONSE_HALT_PROCESSING) === 0;
     }
 }
