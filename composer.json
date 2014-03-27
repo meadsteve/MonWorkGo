@@ -1,6 +1,8 @@
 {
     "name": "mead-steve/mon-work-go",
     "description": "A simple mongo DB based work queue.",
+    "type": "library",
+    "keywords": ["message", "queue", "processing", "job", "work"],
     "license": "MIT",
     "authors": [
         {
