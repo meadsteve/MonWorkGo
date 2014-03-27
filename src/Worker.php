@@ -38,16 +38,21 @@ class Worker
     public function start()
     {
         $running = true;
+        $this->logger->debug("Worker starting");
+
         while ($running) {
             $work = $this->queue->getWork();
             if ($work !== null) {
+                $this->logger->debug("Starting Unit of work: " . (string) $work->identifier);
                 $running = $this->doWork($work);
+                $this->logger->debug("Finished Unit of work: " . (string) $work->identifier);
             } else {
                 $this->logger->debug("Sleeping as no work found");
                 sleep(10);
             }
         }
 
+        $this->logger->debug("Worker stopping");
         return $this;
     }
 
@@ -63,9 +68,21 @@ class Worker
 
         if ($response & self::WORK_RESPONSE_FAILED) {
             $this->queue->markWorkAsFailed($work);
+            $this->logger->debug("Work has failed");
         } else {
             $this->queue->markWorkAsComplete($work);
+            $this->logger->debug("Work has succeeded");
         }
-        return ($response & self::WORK_RESPONSE_HALT_PROCESSING) === 0;
+
+        return !$this->shouldHalt($response);
+    }
+
+    protected function shouldHalt($response)
+    {
+        $halt = ($response & self::WORK_RESPONSE_HALT_PROCESSING) !== 0;
+        if ($halt) {
+            $this->logger->debug("Work has requested worker terminates");
+        }
+        return $halt;
     }
 }
