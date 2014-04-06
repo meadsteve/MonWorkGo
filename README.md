@@ -8,7 +8,7 @@ The easiest way to install this library is using composer. In your project's com
 
     {
         "require": {
-            "mead-steve/mon-work-go": "1.1.*"
+            "mead-steve/mon-work-go": "2.0.*"
         }
     }
 Then run composer update.
