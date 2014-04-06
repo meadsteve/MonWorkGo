@@ -13,4 +13,4 @@ matrix:
 
 before_script: phpenv config-add travs-config.ini
 install: composer install
-script: phpunit --configuration teste/full.xml
+script: phpunit --configuration tests/full.xml
