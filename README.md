@@ -43,11 +43,11 @@ $manager->createWorker(
 )->start();
 ```
 
-## Reporting on the progess of the work
+## Reporting on the progress of the work
 The worker object can also be provided with a psr logger. In addition to sending debug messages to this logger the work function also gets passed the logger as the second argument so can report on its own progress.
 
 ```php
-$manager = new \MeadSteve\MonWorkGo\Manager($mongoDB, "", $logger);
+$manager = (new \MeadSteve\MonWorkGo\Manager($mongoDB))->setLogger($logger);
 
 $manager->createWorker(
     "mainQueue",

@@ -2,10 +2,10 @@
 
 namespace MeadSteve\MonWorkGo;
 
-
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
-class Manager
+class Manager implements LoggerAwareInterface
 {
     /**
      * @var \MongoDB
@@ -22,12 +22,25 @@ class Manager
      */
     protected $collectionPrefix;
 
-    public function __construct(\MongoDB $mongoDB, $collectionPrefix = "", LoggerInterface $logger = null)
+    public function __construct(\MongoDB $mongoDB, $collectionPrefix = "")
     {
         $this->mongoDB = $mongoDB;
-        $this->logger = $logger;
         $this->collectionPrefix = $collectionPrefix;
     }
+
+    /**
+     * Sets a logger instance on the object.
+     *
+     * This will be passed to all workers
+     *
+     * @param LoggerInterface $logger
+     * @return null
+     */
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
 
     /**
      * @param string $queueName
