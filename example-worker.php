@@ -14,7 +14,7 @@ class EchoLogger extends \Psr\Log\AbstractLogger
 }
 $logger = new EchoLogger();
 
-$manager = new \MeadSteve\MonWorkGo\Manager($mongoDB, "", $logger);
+$manager = (new \MeadSteve\MonWorkGo\Manager($mongoDB))->setLogger($logger);
 
 $manager->createWorker(
     "mainQueue",
